@@ -1,0 +1,1774 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>인생게임 - 나의 미래 시뮬레이터</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #625bf6;
+    --secondary: #14b8a6;
+    --background: #f4f6fc;
+    --text: #17213a;
+    --muted: #778199;
+}
+
+body {
+    margin: 0;
+    font-family: "Pretendard", "Malgun Gothic", sans-serif;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+header {
+    background: #fff;
+    padding: 18px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e8ebf3;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+header span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.container {
+    max-width: 960px;
+    margin: auto;
+    padding: 28px 20px 60px;
+}
+
+.hero {
+    background: linear-gradient(120deg, #5145dc, #8177ff);
+    color: white;
+    padding: 38px 30px;
+    border-radius: 24px;
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    font-size: clamp(27px, 5vw, 42px);
+    line-height: 1.3;
+    margin: 12px 0;
+}
+
+.hero p {
+    color: #eeecff;
+    margin-bottom: 0;
+}
+
+.tag {
+    display: inline-block;
+    padding: 5px 13px;
+    border-radius: 30px;
+    background: #ffffff25;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.card {
+    background: white;
+    padding: 26px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 25px #25326b09;
+    border: 1px solid #e9ecf5;
+}
+
+h2, h3 {
+    margin-top: 0;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin: 18px 0 8px;
+}
+
+input, select {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 1px solid #dce1ed;
+    border-radius: 12px;
+    background: #fafbff;
+    color: var(--text);
+}
+
+input:focus, select:focus {
+    outline: 2px solid #a39eff;
+}
+
+button {
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 18px;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.97);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.primary {
+    background: var(--primary);
+    color: white;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.secondary {
+    background: #eeedff;
+    color: var(--primary);
+    width: 100%;
+    margin-top: 12px;
+}
+
+.jobs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.job {
+    background: #f0f1fa;
+    color: #4d5471;
+    font-size: 13px;
+    padding: 9px 14px;
+}
+
+.salary-box {
+    background: #f3f1ff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.salary-box strong {
+    color: var(--primary);
+    font-size: 28px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.error {
+    color: #dc2626;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: white;
+    border: 1px solid #e9ecf5;
+    border-radius: 16px;
+    padding: 18px;
+}
+
+.stat small {
+    color: var(--muted);
+}
+
+.stat strong {
+    display: block;
+    font-size: clamp(17px, 3vw, 25px);
+    color: var(--primary);
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+}
+
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin: 15px 0;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 10px 3px;
+    border-radius: 10px;
+    background: #e9ecf5;
+    color: #8490a5;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.step.active {
+    background: var(--primary);
+    color: white;
+}
+
+.step.done {
+    background: #d8f5ed;
+    color: #087c68;
+}
+
+.progress {
+    height: 9px;
+    background: #e8eaf4;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #625bf6, #14b8a6);
+    transition: width 0.4s;
+}
+
+.life-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.life-icon {
+    font-size: 42px;
+    background: #f0efff;
+    border-radius: 18px;
+    padding: 10px 16px;
+}
+
+.life-title h2 {
+    margin: 0;
+}
+
+.choices {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.choice {
+    text-align: left;
+    background: #fff;
+    color: var(--text);
+    border: 2px solid #e6e9f3;
+    padding: 20px 16px;
+    font-weight: normal;
+}
+
+.choice:hover {
+    border-color: var(--primary);
+    background: #f8f7ff;
+}
+
+.choice .emoji {
+    display: block;
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.choice strong {
+    display: block;
+    font-size: 17px;
+}
+
+.choice small {
+    display: block;
+    margin-top: 7px;
+    color: var(--muted);
+}
+
+.choice .rate {
+    display: block;
+    margin-top: 12px;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.event {
+    background: #fff8e7;
+    border: 1px solid #f3dfa9;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.event h3 {
+    color: #9a6700;
+    margin-bottom: 6px;
+}
+
+.event-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.event-actions button {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #e4cd93;
+    color: #75530c;
+}
+
+.log {
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.log-item {
+    padding: 11px 0;
+    border-bottom: 1px solid #edf0f7;
+    font-size: 14px;
+}
+
+.positive {
+    color: #059669;
+}
+
+.negative {
+    color: #dc2626;
+}
+
+.result-hero {
+    text-align: center;
+    padding: 30px 15px;
+}
+
+.result-hero .trophy {
+    font-size: 60px;
+}
+
+.result-hero h1 {
+    font-size: clamp(30px, 6vw, 48px);
+    color: var(--primary);
+    margin: 5px 0;
+}
+
+.result-hero h2 {
+    margin-bottom: 5px;
+}
+
+canvas {
+    width: 100%;
+    height: 270px;
+    display: block;
+}
+
+.analysis-box {
+    padding: 20px;
+    background: #f5f7fc;
+    border-radius: 14px;
+    margin-top: 12px;
+}
+
+.analysis-box h3 {
+    margin-bottom: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 12px 6px;
+    border-bottom: 1px solid #edf0f5;
+    text-align: right;
+}
+
+th:first-child, td:first-child {
+    text-align: left;
+}
+
+th {
+    color: var(--muted);
+}
+
+.notice {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 20px;
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 14px 18px;
+    }
+
+    header span {
+        font-size: 10px;
+    }
+
+    .container {
+        padding: 18px 14px 40px;
+    }
+
+    .hero {
+        padding: 28px 22px;
+    }
+
+    .card {
+        padding: 19px;
+    }
+
+    .choices {
+        grid-template-columns: 1fr;
+    }
+
+    .choice {
+        padding: 15px;
+    }
+
+    .stats {
+        gap: 6px;
+    }
+
+    .stat {
+        padding: 12px 9px;
+    }
+
+    .stat small {
+        font-size: 11px;
+    }
+
+    table {
+        font-size: 11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🎮 인생게임</div>
+    <span>나의 미래 금융 시뮬레이터</span>
+</header>
+
+<main class="container">
+
+    <!-- 직업 선택 화면 -->
+    <section id="startScreen">
+
+        <div class="hero">
+            <span class="tag">LIFE SIMULATOR</span>
+            <h1>꿈꾸는 직업,<br>어떤 인생을 살게 될까?</h1>
+            <p>
+                나의 희망 직업으로 50년의 인생을 살아보고
+                미래의 자산과 소비 습관을 알아보세요.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>🚀 나의 미래 직업 선택</h2>
+            <p class="subtitle">
+                관심 있는 직업을 선택하거나 직접 입력해 보세요.
+            </p>
+
+            <label for="jobInput">희망 직업</label>
+
+            <input
+                id="jobInput"
+                type="text"
+                maxlength="50"
+                placeholder="예: 개발자, 의사, 웹툰 작가"
+                list="jobList"
+                autocomplete="off"
+            >
+
+            <datalist id="jobList"></datalist>
+
+            <div class="jobs">
+                <button class="job" onclick="selectJob('개발자')">
+                    💻 개발자
+                </button>
+                <button class="job" onclick="selectJob('의사')">
+                    🩺 의사
+                </button>
+                <button class="job" onclick="selectJob('교사')">
+                    📚 교사
+                </button>
+                <button class="job" onclick="selectJob('디자이너')">
+                    🎨 디자이너
+                </button>
+                <button class="job" onclick="selectJob('간호사')">
+                    💉 간호사
+                </button>
+                <button class="job" onclick="selectJob('공무원')">
+                    🏛️ 공무원
+                </button>
+                <button class="job" onclick="selectJob('유튜버')">
+                    🎬 유튜버
+                </button>
+                <button class="job" onclick="selectJob('금융 전문가')">
+                    📈 금융 전문가
+                </button>
+            </div>
+
+            <button class="primary" onclick="estimateSalary()">
+                ✨ 예상 연봉 계산하기
+            </button>
+
+            <div id="startError" class="error" role="alert"></div>
+
+            <div id="salaryBox" class="salary-box hidden">
+
+                <span class="subtitle">예상 시작 연봉 (세전)</span>
+                <br>
+                <strong id="salaryPreview"></strong>
+
+                <p id="salaryDescription" class="subtitle"></p>
+
+                <label for="salaryInput">연봉 직접 수정 (만원)</label>
+
+                <input
+                    id="salaryInput"
+                    type="number"
+                    min="100"
+                    max="1000000"
+                    step="1"
+                >
+
+                <label for="growthInput">예상 연봉 상승률</label>
+
+                <select id="growthInput">
+                    <option value="0">0% - 연봉 유지</option>
+                    <option value="1">1% - 안정적 성장</option>
+                    <option value="2" selected>2% - 보통 성장</option>
+                    <option value="3">3% - 꾸준한 성장</option>
+                    <option value="5">5% - 높은 성장</option>
+                </select>
+
+                <button class="primary" onclick="startGame()">
+                    🎮 나의 인생 시작하기
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>어떻게 플레이하나요?</h3>
+            <p>💼 직업을 선택하고 예상 연봉을 확인하세요.</p>
+            <p>💰 각 연령대마다 소비와 저축 방식을 결정하세요.</p>
+            <p>⚡ 예상하지 못한 돌발상황에 대처하세요.</p>
+            <p>🏆 60대가 끝나면 나의 미래 자산을 확인하세요.</p>
+        </div>
+
+    </section>
+
+    <!-- 게임 진행 화면 -->
+    <section id="gameScreen" class="hidden">
+
+        <div class="card">
+            <div class="subtitle" id="careerLabel"></div>
+            <div class="timeline" id="timeline"></div>
+
+            <div class="progress">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <small>💼 현재 세전 연봉</small>
+                <strong id="currentSalary">0원</strong>
+            </div>
+
+            <div class="stat">
+                <small>💰 누적 순자산</small>
+                <strong id="currentAsset">0원</strong>
+            </div>
+
+            <div class="stat">
+                <small>❤️ 행복 지수</small>
+                <strong id="currentHappy">60점</strong>
+            </div>
+        </div>
+
+        <div class="card">
+
+            <div class="life-title">
+                <div class="life-icon" id="lifeIcon">🌱</div>
+                <div>
+                    <h2 id="lifeAge">20대</h2>
+                    <div id="lifeSubtitle" class="subtitle"></div>
+                </div>
+            </div>
+
+            <p id="lifeDescription"></p>
+
+            <div id="choiceArea">
+                <h3>어떤 생활을 선택할까요?</h3>
+
+                <div class="choices">
+
+                    <button class="choice" onclick="chooseLife('save')">
+                        <span class="emoji">🐷</span>
+                        <strong>절약형 생활</strong>
+                        <small>
+                            꼭 필요한 곳에만 소비하며
+                            미래를 위해 돈을 모아요.
+                        </small>
+                        <span class="rate">목표 저축률 50%</span>
+                    </button>
+
+                    <button class="choice" onclick="chooseLife('balance')">
+                        <span class="emoji">⚖️</span>
+                        <strong>균형형 생활</strong>
+                        <small>
+                            취미와 여행을 즐기면서
+                            저축도 함께해요.
+                        </small>
+                        <span class="rate">목표 저축률 30%</span>
+                    </button>
+
+                    <button class="choice" onclick="chooseLife('enjoy')">
+                        <span class="emoji">✈️</span>
+                        <strong>즐기는 생활</strong>
+                        <small>
+                            여행, 쇼핑, 취미 등
+                            현재의 행복을 중요하게 생각해요.
+                        </small>
+                        <span class="rate">목표 저축률 10%</span>
+                    </button>
+
+                </div>
+
+                <p class="notice">
+                    저축률은 세후 소득 기준입니다.
+                    최소 생활비 때문에 실제 저축률은 달라질 수 있습니다.
+                </p>
+            </div>
+
+            <div id="eventBox" class="event hidden">
+                <h3 id="eventTitle"></h3>
+                <p id="eventDescription"></p>
+                <div id="eventActions" class="event-actions"></div>
+            </div>
+
+            <div id="roundSummary" class="analysis-box hidden"></div>
+
+            <button
+                id="nextButton"
+                class="primary hidden"
+                onclick="nextStage()"
+            >
+                다음 인생 단계로 →
+            </button>
+
+        </div>
+
+        <div class="card">
+            <h3>📖 나의 인생 기록</h3>
+            <div id="gameLog" class="log"></div>
+        </div>
+
+        <button class="secondary" onclick="confirmRestart()">
+            처음부터 다시 시작
+        </button>
+
+    </section>
+
+    <!-- 최종 결과 화면 -->
+    <section id="resultScreen" class="hidden">
+
+        <div class="card result-hero">
+            <div class="trophy">🏆</div>
+            <h2>나의 50년 인생이 완성되었어요!</h2>
+            <p id="resultJob" class="subtitle"></p>
+            <span class="subtitle">69세 예상 순자산</span>
+            <h1 id="finalAsset"></h1>
+            <p id="resultType"></p>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <small>평생 세후 소득</small>
+                <strong id="finalIncome"></strong>
+            </div>
+
+            <div class="stat">
+                <small>실제 저축률</small>
+                <strong id="finalSaving"></strong>
+            </div>
+
+            <div class="stat">
+                <small>행복 지수</small>
+                <strong id="finalHappy"></strong>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📈 나의 자산 성장 그래프</h2>
+            <p class="subtitle">
+                각 연령대가 끝났을 때의 누적 순자산
+            </p>
+            <canvas id="assetChart"></canvas>
+        </div>
+
+        <div class="card">
+            <h2>📊 나의 인생 분석 리포트</h2>
+            <div id="analysisReport"></div>
+        </div>
+
+        <div class="card">
+            <h2>📝 연령대별 인생 기록</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>연령대</th>
+                        <th>세후 소득</th>
+                        <th>총지출</th>
+                        <th>순자산</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTable"></tbody>
+            </table>
+        </div>
+
+        <button class="primary" onclick="restartGame()">
+            🔄 다른 직업으로 다시 살아보기
+        </button>
+
+    </section>
+
+    <p class="notice">
+        ※ 본 서비스는 진로 탐색과 금융 교육을 위한 가상 게임입니다.
+        연봉은 실제 통계가 아닌 예시 추정값이며,
+        세금·물가·생활비·은퇴 시점 등은 단순화되었습니다.
+        실제 미래 소득이나 자산을 보장하지 않습니다.
+    </p>
+
+</main>
+
+<footer>
+    인생게임 · 나의 선택으로 만드는 미래
+    <br>AI Hackathon Project
+</footer>
+
+<script>
+
+// ========================================
+// 1. 직업별 예시 연봉 데이터
+// 단위: 만원, 시작 연봉 기준
+// ========================================
+
+const salaryData = {
+    "개발자": 4200,
+    "프로그래머": 4200,
+    "소프트웨어 개발자": 4500,
+    "웹 개발자": 3800,
+    "게임 개발자": 4000,
+    "인공지능 개발자": 5000,
+    "AI 개발자": 5000,
+    "데이터 분석가": 4200,
+    "정보보안 전문가": 4500,
+    "의사": 7000,
+    "치과의사": 6500,
+    "한의사": 5000,
+    "약사": 4500,
+    "간호사": 3800,
+    "수의사": 4200,
+    "물리치료사": 3200,
+    "교사": 3200,
+    "초등학교 교사": 3200,
+    "중학교 교사": 3200,
+    "고등학교 교사": 3300,
+    "교수": 5000,
+    "공무원": 3000,
+    "경찰관": 3300,
+    "소방관": 3400,
+    "군인": 3200,
+    "변호사": 6000,
+    "회계사": 5000,
+    "세무사": 4200,
+    "금융 전문가": 4500,
+    "은행원": 4500,
+    "증권사 직원": 5000,
+    "디자이너": 3200,
+    "그래픽 디자이너": 3200,
+    "UX 디자이너": 4000,
+    "건축가": 3800,
+    "엔지니어": 4200,
+    "기계공학자": 4200,
+    "전기공학자": 4300,
+    "반도체 엔지니어": 5000,
+    "연구원": 4000,
+    "과학자": 4000,
+    "기자": 3500,
+    "작가": 2800,
+    "웹툰 작가": 3200,
+    "유튜버": 3000,
+    "가수": 2800,
+    "배우": 2800,
+    "운동선수": 3500,
+    "프로게이머": 3500,
+    "요리사": 3000,
+    "바리스타": 2700,
+    "제빵사": 2800,
+    "미용사": 2800,
+    "승무원": 3600,
+    "파일럿": 6500,
+    "항공기 조종사": 6500,
+    "마케터": 3500,
+    "회사원": 3500,
+    "대기업 직원": 5000,
+    "중소기업 직원": 3200,
+    "사회복지사": 2900,
+    "심리상담사": 3200,
+    "자동차 정비사": 3300,
+    "농부": 3000,
+    "사업가": 4000,
+    "창업가": 3500,
+    "건축기사": 3800,
+    "인테리어 디자이너": 3300
+};
+
+const aliases = {
+    "프로그래밍": "개발자",
+    "의료인": "의사",
+    "선생님": "교사",
+    "웹툰작가": "웹툰 작가",
+    "ai개발자": "AI 개발자",
+    "ai 개발자": "AI 개발자",
+    "경찰": "경찰관",
+    "소방사": "소방관",
+    "조종사": "파일럿"
+};
+
+const $ = id => document.getElementById(id);
+
+const money = value => {
+    const sign = value < 0 ? "-" : "";
+    const n = Math.round(Math.abs(value));
+
+    if (n >= 10000) {
+        const eok = Math.floor(n / 10000);
+        const rest = n % 10000;
+
+        return sign + eok.toLocaleString() + "억" +
+            (rest ? " " + rest.toLocaleString() + "만" : "") + "원";
+    }
+
+    return sign + n.toLocaleString() + "만원";
+};
+
+Object.keys(salaryData).forEach(job => {
+    const option = document.createElement("option");
+    option.value = job;
+    $("jobList").appendChild(option);
+});
+
+let estimatedJob = "";
+
+function selectJob(job) {
+    $("jobInput").value = job;
+    estimateSalary();
+}
+
+$("jobInput").addEventListener("input", () => {
+    $("salaryBox").classList.add("hidden");
+    $("startError").textContent = "";
+    estimatedJob = "";
+});
+
+function normalize(text) {
+    return text.toLowerCase().replace(/\s/g, "");
+}
+
+function estimateSalary() {
+    const job = $("jobInput").value.trim();
+
+    $("startError").textContent = "";
+
+    if (!job || !/[가-힣a-zA-Z]/.test(job)) {
+        $("startError").textContent =
+            "올바른 직업 이름을 입력해 주세요.";
+        return;
+    }
+
+    let salary = 3500;
+    let description = "";
+
+    const resolved = aliases[job.toLowerCase()] || job;
+
+    const exact = Object.keys(salaryData).find(
+        key => normalize(key) === normalize(resolved)
+    );
+
+    if (exact) {
+        salary = salaryData[exact];
+        description =
+            exact + "의 내장 예시 연봉을 적용했습니다. " +
+            "실제 초봉은 근무지와 경력에 따라 다릅니다.";
+    } else {
+        // 등록되지 않은 직업의 분야별 추정
+        const rules = [
+            [/의료|의학|외과|내과/, 5500],
+            [/개발|인공지능|AI|소프트웨어|코딩/i, 4200],
+            [/금융|투자|회계|증권/, 4500],
+            [/공학|반도체|기술|엔지니어/, 4200],
+            [/교육|강사|선생|학원/, 3200],
+            [/디자인|미술|예술|작가/, 3000],
+            [/영상|방송|크리에이터/, 3000],
+            [/요리|음식|카페|서비스/, 2900],
+            [/법률|법무/, 4500]
+        ];
+
+        const matched = rules.find(rule => rule[0].test(job));
+
+        if (matched) {
+            salary = matched[1];
+            description =
+                "등록되지 않은 직업입니다. 관련 직업 분야의 " +
+                "예시 연봉을 사용한 낮은 신뢰도의 추정값입니다.";
+        } else {
+            description =
+                "직업 정보를 확인할 수 없어 기본 가정값을 적용했습니다. " +
+                "알고 있는 실제 연봉을 직접 입력해 주세요.";
+        }
+    }
+
+    estimatedJob = job;
+
+    $("salaryInput").value = salary;
+    $("salaryPreview").textContent = money(salary);
+    $("salaryDescription").textContent = description;
+    $("salaryBox").classList.remove("hidden");
+}
+
+$("salaryInput").addEventListener("input", () => {
+    const value = Number($("salaryInput").value);
+
+    $("salaryPreview").textContent =
+        value >= 100 && value <= 1000000
+        ? money(value)
+        : "연봉을 확인해 주세요";
+});
+
+// ========================================
+// 2. 게임 기본 설정
+// ========================================
+
+const lifeStages = [
+    {
+        age: "20대",
+        icon: "🌱",
+        title: "사회생활의 시작",
+        description:
+            "드디어 꿈꾸던 직업을 갖게 되었습니다! " +
+            "첫 월급을 받으며 독립과 저축을 고민합니다.",
+        minimum: 1800
+    },
+    {
+        age: "30대",
+        icon: "🏠",
+        title: "나만의 생활 만들기",
+        description:
+            "직장 생활에 익숙해졌습니다. " +
+            "주거비와 자기계발, 가족 계획을 고민하는 시기입니다.",
+        minimum: 2200
+    },
+    {
+        age: "40대",
+        icon: "💼",
+        title: "커리어의 전성기",
+        description:
+            "경력과 소득이 쌓였습니다. " +
+            "더 큰 도전을 할지 안정적인 생활을 할지 선택하세요.",
+        minimum: 2400
+    },
+    {
+        age: "50대",
+        icon: "🌳",
+        title: "미래를 준비하는 시간",
+        description:
+            "은퇴가 조금씩 가까워집니다. " +
+            "건강과 노후 자금의 중요성이 커지는 시기입니다.",
+        minimum: 2300
+    },
+    {
+        age: "60대",
+        icon: "🌅",
+        title: "인생의 새로운 시작",
+        description:
+            "오랜 사회생활을 마무리할 준비를 합니다. " +
+            "앞으로의 생활을 위한 마지막 경제적 선택입니다.",
+        minimum: 2000
+    }
+];
+
+const lifeChoices = {
+    save: {
+        name: "절약형",
+        rate: 0.5,
+        happy: -4
+    },
+    balance: {
+        name: "균형형",
+        rate: 0.3,
+        happy: 5
+    },
+    enjoy: {
+        name: "즐기는형",
+        rate: 0.1,
+        happy: 10
+    }
+};
+
+let game = {};
+let round = {};
+let phase = "idle";
+
+function showScreen(id) {
+    ["startScreen", "gameScreen", "resultScreen"].forEach(screen => {
+        $(screen).classList.toggle("hidden", screen !== id);
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function startGame() {
+    const job = $("jobInput").value.trim();
+    const salary = Number($("salaryInput").value);
+    const growth = Number($("growthInput").value) / 100;
+
+    if (!job || job !== estimatedJob) {
+        $("startError").textContent =
+            "직업을 입력하고 예상 연봉을 먼저 계산해 주세요.";
+        return;
+    }
+
+    if (!Number.isFinite(salary) ||
+        salary < 100 || salary > 1000000) {
+
+        $("startError").textContent =
+            "연봉을 100만원 이상, 100만만원 이하로 입력해 주세요.";
+        return;
+    }
+
+    game = {
+        job,
+        salary,
+        startSalary: salary,
+        growth,
+        stage: 0,
+        asset: 0,
+        happiness: 60,
+        totalIncome: 0,
+        totalExpense: 0,
+        history: [],
+        choices: {
+            save: 0,
+            balance: 0,
+            enjoy: 0
+        }
+    };
+
+    $("gameLog").replaceChildren();
+    $("startError").textContent = "";
+
+    showScreen("gameScreen");
+
+    addLog("🎉 " + job + "으로 인생을 시작했습니다!");
+    renderStage();
+}
+
+function changeHappy(amount) {
+    game.happiness = Math.max(
+        0, Math.min(100, game.happiness + amount)
+    );
+}
+
+function updateStats() {
+    $("currentSalary").textContent = money(game.salary);
+    $("currentAsset").textContent = money(game.asset);
+    $("currentHappy").textContent = game.happiness + "점";
+
+    $("currentAsset").style.color =
+        game.asset < 0 ? "#dc2626" : "#625bf6";
+}
+
+function renderStage() {
+    phase = "choose";
+
+    const stage = lifeStages[game.stage];
+
+    $("careerLabel").textContent = "나의 직업 · " + game.job;
+
+    $("timeline").replaceChildren();
+
+    lifeStages.forEach((item, index) => {
+        const step = document.createElement("div");
+
+        step.className = "step";
+
+        if (index === game.stage) step.classList.add("active");
+        if (index < game.stage) step.classList.add("done");
+
+        step.textContent = item.age;
+        $("timeline").appendChild(step);
+    });
+
+    $("progressFill").style.width =
+        (game.stage / lifeStages.length * 100) + "%";
+
+    $("lifeAge").textContent = stage.age;
+    $("lifeIcon").textContent = stage.icon;
+    $("lifeSubtitle").textContent = stage.title;
+    $("lifeDescription").textContent = stage.description;
+
+    $("choiceArea").classList.remove("hidden");
+    $("eventBox").classList.add("hidden");
+    $("roundSummary").classList.add("hidden");
+    $("nextButton").classList.add("hidden");
+
+    updateStats();
+}
+
+// ========================================
+// 3. 연봉 및 생활비 계산
+// ========================================
+
+// 실제 세법이 아닌 교육용 공제율 모델
+function getNetSalary(gross) {
+    let deduction;
+
+    if (gross <= 3000) deduction = 0.10;
+    else if (gross <= 5000) deduction = 0.15;
+    else if (gross <= 8000) deduction = 0.20;
+    else if (gross <= 12000) deduction = 0.25;
+    else deduction = 0.30;
+
+    return gross * (1 - deduction);
+}
+
+function chooseLife(type) {
+    if (phase !== "choose") return;
+
+    phase = "event";
+
+    const choice = lifeChoices[type];
+    const stage = lifeStages[game.stage];
+
+    game.choices[type]++;
+
+    let income = 0;
+    let expense = 0;
+    let salary = game.salary;
+
+    // 한 단계마다 10년간의 소득과 지출을 계산
+    for (let year = 0; year < 10; year++) {
+
+        const netSalary = getNetSalary(salary);
+
+        const annualExpense = Math.max(
+            stage.minimum,
+            netSalary * (1 - choice.rate)
+        );
+
+        income += netSalary;
+        expense += annualExpense;
+
+        salary *= (1 + game.growth);
+    }
+
+    round = {
+        age: stage.age,
+        income,
+        expense,
+        choice: choice.name,
+        nextSalary: salary
+    };
+
+    game.totalIncome += income;
+    game.totalExpense += expense;
+    game.asset += income - expense;
+
+    changeHappy(choice.happy);
+
+    addLog(
+        stage.age + " · " + choice.name +
+        " 생활 선택 / 기본 자산 변화 " +
+        money(income - expense)
+    );
+
+    $("choiceArea").classList.add("hidden");
+
+    updateStats();
+    showRandomEvent();
+}
+
+// ========================================
+// 4. 랜덤 돌발상황
+// ========================================
+
+const events = [
+    {
+        title: "🎁 특별 성과급!",
+        description:
+            "열심히 일한 보상으로 특별 성과급을 받았습니다.",
+        options: [
+            {
+                label: "성과급 500만원 받기",
+                income: 500,
+                expense: 0,
+                happy: 4
+            }
+        ]
+    },
+    {
+        title: "🏥 갑작스러운 병원비",
+        description:
+            "예상하지 못한 건강 문제로 치료비가 발생했습니다.",
+        options: [
+            {
+                label: "치료비 300만원 지출",
+                income: 0,
+                expense: 300,
+                happy: -3
+            }
+        ]
+    },
+    {
+        title: "💼 이직 제안이 왔어요!",
+        description:
+            "새로운 회사에서 더 높은 연봉을 제안했습니다. " +
+            "이직하면 다음 연령대부터 연봉이 20% 상승하지만 " +
+            "준비 비용 200만원이 발생합니다.",
+        options: [
+            {
+                label: "이직하기",
+                income: 0,
+                expense: 200,
+                happy: 3,
+                salaryMultiplier: 1.2
+            },
+            {
+                label: "현재 직장 유지",
+                income: 0,
+                expense: 0,
+                happy: 2
+            }
+        ],
+        careerEvent: true
+    },
+    {
+        title: "✈️ 해외여행의 기회",
+        description:
+            "친구들과 특별한 해외여행을 떠날 기회가 생겼습니다.",
+        options: [
+            {
+                label: "여행 가기 (-400만원)",
+                income: 0,
+                expense: 400,
+                happy: 12
+            },
+            {
+                label: "여행 대신 저축하기",
+                income: 0,
+                expense: 0,
+                happy: 0
+            }
+        ]
+    },
+    {
+        title: "📚 자기계발의 기회",
+        description:
+            "전문 교육을 받으면 다음 연령대부터 " +
+            "연봉이 10% 상승합니다. 교육비는 150만원입니다.",
+        options: [
+            {
+                label: "교육 받기",
+                income: 0,
+                expense: 150,
+                happy: 3,
+                salaryMultiplier: 1.1
+            },
+            {
+                label: "교육 받지 않기",
+                income: 0,
+                expense: 0,
+                happy: 0
+            }
+        ],
+        careerEvent: true
+    },
+    {
+        title: "🔧 갑작스러운 수리비",
+        description:
+            "집의 시설이 고장 나 예상하지 못한 수리비가 발생했습니다.",
+        options: [
+            {
+                label: "수리비 200만원 지출",
+                income: 0,
+                expense: 200,
+                happy: -2
+            }
+        ]
+    },
+    {
+        title: "💻 부업의 성공",
+        description:
+            "주말에 진행한 부업이 성공해 추가 수입이 생겼습니다.",
+        options: [
+            {
+                label: "추가 수입 700만원 받기",
+                income: 700,
+                expense: 0,
+                happy: 5
+            }
+        ]
+    },
+    {
+        title: "📉 경기 침체",
+        description:
+            "경기가 어려워지면서 소득 일부가 감소했습니다.",
+        options: [
+            {
+                label: "소득 감소 반영하기",
+                income: -500,
+                expense: 0,
+                happy: -5
+            }
+        ]
+    },
+    {
+        title: "🎉 승진에 성공했어요!",
+        description:
+            "능력을 인정받아 승진했습니다. " +
+            "다음 연령대부터 연봉이 15% 상승합니다.",
+        options: [
+            {
+                label: "승진 축하하기",
+                income: 300,
+                expense: 0,
+                happy: 8,
+                salaryMultiplier: 1.15
+            }
+        ],
+        careerEvent: true
+    },
+    {
+        title: "🎂 소중한 사람과의 시간",
+        description:
+            "가족이나 친구를 위한 특별한 선물을 준비할 수 있습니다.",
+        options: [
+            {
+                label: "선물 준비 (-100만원)",
+                income: 0,
+                expense: 100,
+                happy: 8
+            },
+            {
+                label: "돈이 들지 않는 추억 만들기",
+                income: 0,
+                expense: 0,
+                happy: 4
+            }
+        ]
+    }
+];
+
+function showRandomEvent() {
+    // 마지막 연령대에서는 이후 연봉 상승 이벤트 제외
+    const available = events.filter(event =>
+        game.stage < 4 || !event.careerEvent
+    );
+
+    const event = available[
+        Math.floor(Math.random() * available.length)
+    ];
+
+    $("eventTitle").textContent = event.title;
+    $("eventDescription").textContent = event.description;
+    $("eventActions").replaceChildren();
+
+    event.options.forEach(option => {
+        const button = document.createElement("button");
+
+        button.textContent = option.label;
+        button.onclick = () => resolveEvent(event, option);
+
+        $("eventActions").appendChild(button);
+    });
+
+    $("eventBox").classList.remove("hidden");
+}
+
+function resolveEvent(event, option) {
+    if (phase !== "event") return;
+
+    phase = "complete";
+
+    // 소득 감소가 해당 단계 소득보다 커지지 않도록 제한
+    const incomeChange = Math.max(
+        -round.income,
+        option.income
+    );
+
+    round.income += incomeChange;
+    round.expense += option.expense;
+
+    game.totalIncome += incomeChange;
+    game.totalExpense += option.expense;
+    game.asset += incomeChange - option.expense;
+
+    changeHappy(option.happy);
+
+    if (option.salaryMultiplier) {
+        round.nextSalary *= option.salaryMultiplier;
+    }
+
+    game.history.push({
+        age: round.age,
+        income: round.income,
+        expense: round.expense,
+        asset: game.asset,
+        choice: round.choice
+    });
+
+    addLog(event.title + " · " + option.label);
+
+    $("eventActions").replaceChildren();
+
+    const summary = $("roundSummary");
+
+    summary.innerHTML = `
+        <h3>📋 ${round.age} 생활 결산</h3>
+        <p>10년간 세후 소득: <b>${money(round.income)}</b></p>
+        <p>10년간 총지출: <b>${money(round.expense)}</b></p>
+        <p>순자산 변화:
+            <b class="${round.income >= round.expense
+                ? "positive" : "negative"}">
+                ${money(round.income - round.expense)}
+            </b>
+        </p>
+        <p>현재 누적 순자산: <b>${money(game.asset)}</b></p>
+    `;
+
+    summary.classList.remove("hidden");
+
+    $("nextButton").textContent =
+        game.stage === 4
+        ? "🏆 최종 인생 결과 확인하기"
+        : "다음 인생 단계로 →";
+
+    $("nextButton").classList.remove("hidden");
+
+    $("progressFill").style.width =
+        ((game.stage + 1) / 5 * 100) + "%";
+
+    updateStats();
+}
+
+function nextStage() {
+    if (phase !== "complete") return;
+
+    if (game.stage === 4) {
+        phase = "finished";
+        showResult();
+        return;
+    }
+
+    game.salary = round.nextSalary;
+    game.stage++;
+
+    renderStage();
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function addLog(message) {
+    const item = document.createElement("div");
+
+    item.className = "log-item";
+    item.textContent = message;
+
+    $("gameLog").prepend(item);
+}
+
+// ========================================
+// 5. 최종 자산 및 소비 습관 분석
+// ========================================
+
+function showResult() {
+    const savingRate = game.totalIncome > 0
+        ? game.asset / game.totalIncome * 100
+        : 0;
+
+    let type;
+    let advice;
+
+    if (game.asset < 0) {
+        type = "💳 재정 점검이 필요한 인생";
+        advice =
+            "지출이 소득보다 많았습니다. 고정 생활비를 줄이거나 " +
+            "소득을 높이는 방법을 찾아보세요.";
+    } else if (savingRate >= 40) {
+        type = "🐷 미래 준비형 자산가";
+        advice =
+            "높은 저축률을 유지하며 미래를 준비했습니다. " +
+            "현재의 삶과 미래의 안정 사이에서 균형도 고려해 보세요.";
+    } else if (savingRate >= 20) {
+        type = "⚖️ 균형 잡힌 경제생활";
+        advice =
+            "소비와 저축 사이에서 균형을 유지했습니다. " +
+            "비상금과 노후 자금을 꾸준히 준비해 보세요.";
+    } else {
+        type = "🌈 현재의 행복을 즐기는 인생";
+        advice =
+            "현재의 경험과 생활을 중요하게 생각했습니다. " +
+            "미래의 경제적 안정을 위해 저축 목표를 세워 보세요.";
+    }
+
+    const choiceEntries = Object.entries(game.choices);
+
+    const mostCount = Math.max(
+        ...choiceEntries.map(entry => entry[1])
+    );
+
+    const mostChoice = choiceEntries
+        .filter(entry => entry[1] === mostCount)
+        .map(entry => lifeChoices[entry[0]].name)
+        .join(" · ");
+
+    // 자산을 20년 동안 균등하게 사용한다고 가정
+    const retirementMonthly =
+        Math.max(0, game.asset) / (20 * 12);
+
+    $("resultJob").textContent =
+        game.job + " · 시작 연봉 " + money(game.startSalary);
+
+    $("finalAsset").textContent = money(game.asset);
+    $("resultType").textContent = type;
+    $("finalIncome").textContent = money(game.totalIncome);
+    $("finalSaving").textContent = savingRate.toFixed(1) + "%";
+    $("finalHappy").textContent = game.happiness + "점";
+
+    $("analysisReport").innerHTML = `
+        <div class="analysis-box">
+            <h3>🛍️ 소비 습관 분석</h3>
+            <p>가장 많이 선택한 생활 방식:
+                <b>${mostChoice}</b>
+            </p>
+            <p>절약형 ${game.choices.save}회 ·
+               균형형 ${game.choices.balance}회 ·
+               즐기는형 ${game.choices.enjoy}회</p>
+            <p>평생 총지출: <b>${money(game.totalExpense)}</b></p>
+            <p>${advice}</p>
+        </div>
+
+        <div class="analysis-box">
+            <h3>🏡 미래의 은퇴 생활</h3>
+            <p>모은 순자산을 70세부터 20년 동안
+               나누어 사용한다고 가정하면,</p>
+            <p>월 <b>${money(retirementMonthly)}</b>의
+               생활비를 사용할 수 있습니다.</p>
+            <p class="notice">
+                국민연금, 투자 수익, 물가 상승,
+                추가 소득은 반영하지 않은 단순 계산입니다.
+            </p>
+        </div>
+
+        <div class="analysis-box">
+            <h3>💡 금융 생활 조언</h3>
+            <p>
+                연봉뿐만 아니라 소비 습관과 저축률,
+                예상하지 못한 지출도 미래 자산에 영향을 줍니다.
+                같은 직업이라도 선택에 따라 결과가 달라질 수 있습니다.
+            </p>
+        </div>
+    `;
+
+    $("resultTable").replaceChildren();
+
+    game.history.forEach(record => {
+        const tr = document.createElement("tr");
+
+        [
+            record.age,
+            money(record.income),
+            money(record.expense),
+            money(record.asset)
+        ].forEach(value => {
+            const td = document.createElement("td");
+            td.textContent = value;
+            tr.appendChild(td);
+        });
+
+        $("resultTable").appendChild(tr);
+    });
+
+    showScreen("resultScreen");
+
+    requestAnimationFrame(drawChart);
+}
+
+// ========================================
+// 6. 외부 라이브러리 없는 자산 그래프
+// ========================================
+
+function drawChart() {
+    const canvas = $("assetChart");
+    const ctx = canvas.getContext("2d");
+
+    const width = canvas.clientWidth;
+    const height = 270;
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, width, height);
+
+    const values = [0, ...game.history.map(item => item.asset)];
+    const labels = ["시작", ...game.history.map(item => item.age)];
+
+    const max = Math.max(1, ...values);
+    const min = Math.min(0, ...values);
+    const range = max - min;
+
+    const left = 65;
+    const right = 15;
+    const top = 20;
+    const bottom = 40;
+
+    const plotWidth = width - left - right;
+    const plotHeight = height - top - bottom;
+
+    const getX = i =>
+        left + i / (values.length - 1) * plotWidth;
+
+    const getY = value =>
+        top + (max - value) / range * plotHeight;
+
+    ctx.font = "11px sans-serif";
+
+    // 가로 기준선
+    for (let i = 0; i <= 4; i++) {
+        const value = min + range * i / 4;
+        const y = getY(value);
+
+        ctx.strokeStyle = "#e6e9f3";
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        ctx.moveTo(left, y);
+        ctx.lineTo(width - right, y);
+        ctx.stroke();
+
+        ctx.fillStyle = "#778199";
+        ctx.textAlign = "right";
+
+        const label = Math.abs(value) >= 10000
+            ? (value / 10000).toFixed(1) + "억"
+            : Math.round(value).toLocaleString() + "만";
+
+        ctx.fillText(label, left - 8, y + 4);
+    }
+
+    // 자산 변화 선
+    ctx.beginPath();
+
+    values.forEach((value, i) => {
+        if (i === 0) ctx.moveTo(getX(i), getY(value));
+        else ctx.lineTo(getX(i), getY(value));
+    });
+
+    ctx.strokeStyle = "#625bf6";
+    ctx.lineWidth = 3;
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    // 데이터 포인트 및 연령대
+    values.forEach((value, i) => {
+        ctx.beginPath();
+        ctx.arc(getX(i), getY(value), 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = "#625bf6";
+        ctx.fill();
+
+        ctx.fillStyle = "#778199";
+        ctx.textAlign = "center";
+        ctx.fillText(labels[i], getX(i), height - 15);
+    });
+}
+
+window.addEventListener("resize", () => {
+    if (phase === "finished") drawChart();
+});
+
+// ========================================
+// 7. 게임 재시작
+// ========================================
+
+function confirmRestart() {
+    if (confirm("현재 인생 기록을 초기화하고 다시 시작할까요?")) {
+        restartGame();
+    }
+}
+
+function restartGame() {
+    game = {};
+    round = {};
+    phase = "idle";
+    estimatedJob = "";
+
+    $("jobInput").value = "";
+    $("salaryInput").value = "";
+    $("growthInput").value = "2";
+    $("startError").textContent = "";
+    $("salaryBox").classList.add("hidden");
+
+    showScreen("startScreen");
+}
+
+</script>
+
+</body>
+</html>
